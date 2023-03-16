@@ -406,17 +406,28 @@ public class Hotel {
          String latitude = in.readLine();
          System.out.print("\tEnter longitude: ");
          String longitude = in.readLine();
-         double distance = calculateDistance(latitude, longitude)
-         String query = "SELECT * FROM Catalog WHERE cost < ";
-         System.out.print("\tEnter cost: $");
-         String input = in.readLine();
-         query += input;
 
-         int rowCount = esql.executeQuery(query);
-         System.out.println ("total row(s): " + rowCount);
+         String query = "SELECT d.hotelID, d.hotelName, d.dateEstablished FROM (SELECT hotelID, hotelName, dateEstablished, calculate_distance(";
+         query += latitude + ", " + longitude + ", ";
+         query += "latitude, longitude) AS distance FROM hotel) AS d WHERE d.distance < 30";
+         
+         List<List<String>> output = esql.executeQueryAndReturnResult(query);
+         int rowCount = output.size();
+
+         System.out.printf("\n----------------------------------------------------------------\n");
+         System.out.printf("|                    Hotels within 30 units                    |\n");
+         System.out.printf("----------------------------------------------------------------\n");
+         System.out.printf("| %8s | %-30s | %16s |%n", "Hotel ID", "Hotel Name", "Date Established");
+         System.out.printf("----------------------------------------------------------------\n");
+         for(int i = 0; i < output.size(); i++){
+            System.out.printf("| %8s | %-30s | %16s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2));
+         }
+         System.out.printf("----------------------------------------------------------------\n");
+         System.out.println ("total row(s): " + rowCount + "\n");
       }catch(Exception e){
          System.err.println (e.getMessage());
-      }}
+      }
+   }
    public static void viewRooms(Hotel esql) {}
    public static void bookRooms(Hotel esql) {}
    public static void viewRecentBookingsfromCustomer(Hotel esql) {}
