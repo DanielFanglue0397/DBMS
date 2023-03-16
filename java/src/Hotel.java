@@ -491,8 +491,40 @@ public class Hotel {
          System.err.println (e.getMessage());
       }
    }
-   public static void viewRecentBookingsfromCustomer(Hotel esql) {}
-   public static void updateRoomInfo(Hotel esql) {}
+   public static void viewRecentBookingsfromCustomer(Hotel esql) {
+      
+   }
+   public static void updateRoomInfo(Hotel esql) {
+      //this is in manager mode
+      //first, need to make sure the user is nagager, not normal user
+      //only update price and image_url
+      try{
+         System.out.println("Enter Hotel ID: ");
+         String hotelID = in.readLine();
+         int row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
+         while (row == 0){
+            System.out.println("Invalid Hotel ID. Enter hotel ID: ");
+            hotelID = in.readLine();
+            row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
+         }
+
+         System.out.println("Enter Room Number: ");
+         String roomNum = in.readLine();
+         row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
+         while (row == 0){
+            System.out.println("Invalid Room Number. Enter Room Number: ");
+            hotelID = in.readLine();
+            row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
+         }
+
+         switch(choice)
+         {
+            case1: 
+         }
+      }catch(){
+
+      }
+   }
    public static void viewRecentUpdates(Hotel esql) {}
    public static void viewBookingHistoryofHotel(Hotel esql) {}
    public static void viewRegularCustomers(Hotel esql) {}
