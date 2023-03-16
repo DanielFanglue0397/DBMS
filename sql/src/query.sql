@@ -11,3 +11,7 @@ FROM rooms r
 WHERE NOT EXISTS (SELECT * FROM roombookings b
 					WHERE r.hotelID = hotelID AND r.roomNumber = b.roomNumber AND b.bookingDate = '05/12/2015')
 	AND r.hotelID = 1;
+
+-- bookRooms
+INSERT INTO RoomBookings(customerID, hotelID, roomNumber, bookingDate) VALUES (1, 1, 5, '03/16/2024');
+SELECT * FROM RoomBookings WHERE customerID = 1 AND hotelID = 1;
