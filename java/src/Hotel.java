@@ -459,6 +459,7 @@ public class Hotel {
    }
    public static void bookRooms(Hotel esql, String userID) {
       try{
+         // get user id
          System.out.println(userID);
          System.out.println("Enter Hotel ID: ");
          String hotelID = in.readLine();
