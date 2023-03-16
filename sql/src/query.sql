@@ -5,3 +5,9 @@ FROM (
 	FROM hotel) AS d
 WHERE d.distance < 30;
 
+-- viewRooms
+SELECT r.hotelID, r.roomNumber, r.price, r.imageURL
+FROM rooms r
+WHERE NOT EXISTS (SELECT * FROM roombookings b
+					WHERE r.hotelID = hotelID AND r.roomNumber = b.roomNumber AND b.bookingDate = '05/12/2015')
+	AND r.hotelID = 1;

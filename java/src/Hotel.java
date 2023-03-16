@@ -428,7 +428,35 @@ public class Hotel {
          System.err.println (e.getMessage());
       }
    }
-   public static void viewRooms(Hotel esql) {}
+   public static void viewRooms(Hotel esql) {
+      try{
+         System.out.print("\tEnter hotel ID: ");
+         String hotelID = in.readLine();
+         System.out.print("\tEnter a date (MM/DD/YYYY): ");
+         String date = in.readLine();
+
+         String query = "SELECT r.hotelID, r.roomNumber, r.price, r.imageURL FROM rooms r WHERE NOT EXISTS (SELECT * FROM roombookings b WHERE r.hotelID = hotelID AND r.roomNumber = b.roomNumber AND b.bookingDate = '";
+         query += date + "')";
+         query += "AND r.hotelID = ";
+         query += hotelID;
+         
+         List<List<String>> output = esql.executeQueryAndReturnResult(query);
+         int rowCount = output.size();
+         String title = String.format("|                   Rooms Avability on %s                   |", date);
+         System.out.printf("\n---------------------------------------------------------------------\n");
+         System.out.println(title);
+         System.out.printf("---------------------------------------------------------------------\n");
+         System.out.printf("| %8s | %11s | %7s | %-30s |%n", "Hotel ID", "Room Number", "Price", "Image URL");
+         System.out.printf("---------------------------------------------------------------------\n");
+         for(int i = 0; i < output.size(); i++){
+            System.out.printf("| %8s | %11s | %7s | %30s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2), output.get(i).get(3));
+         }
+         System.out.printf("---------------------------------------------------------------------\n");
+         System.out.println ("total row(s): " + rowCount + "\n");
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
+   }
    public static void bookRooms(Hotel esql) {}
    public static void viewRecentBookingsfromCustomer(Hotel esql) {}
    public static void updateRoomInfo(Hotel esql) {}
