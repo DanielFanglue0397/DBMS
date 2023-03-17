@@ -24,3 +24,6 @@ FROM RoomBookings b, Rooms r
 WHERE b.customerID = 101 AND b.bookingDate < CURRENT_DATE AND r.hotelID = b.hotelID AND r.roomNumber = b.roomNumber
 ORDER BY b.bookingDate DESC
 LIMIT 5;
+
+-- print Users table
+SELECT * FROM Users WHERE userID = 101;
