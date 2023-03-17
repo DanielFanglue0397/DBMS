@@ -300,7 +300,7 @@ public class Hotel {
                    case 1: viewHotels(esql); break;
                    case 2: viewRooms(esql); break;
                    case 3: bookRooms(esql, authorisedUser); break;
-                   case 4: viewRecentBookingsfromCustomer(esql); break;
+                   case 4: viewRecentBookingsfromCustomer(esql, authorisedUser); break;
                    case 5: updateRoomInfo(esql); break;
                    case 6: viewRecentUpdates(esql); break;
                    case 7: viewBookingHistoryofHotel(esql); break;
@@ -443,7 +443,7 @@ public class Hotel {
          List<List<String>> output = esql.executeQueryAndReturnResult(query);
          int rowCount = output.size();
          System.out.printf("\n---------------------------------------------------------------------\n");
-         String title = String.format("|                   Rooms Avability on %s                   |", date);
+         String title = String.format("|                   Rooms Available on %s                   |", date);
          System.out.println(title);
          System.out.printf("---------------------------------------------------------------------\n");
          System.out.printf("| %8s | %11s | %7s | %-30s |%n", "Hotel ID", "Room Number", "Price", "Image URL");
@@ -459,8 +459,6 @@ public class Hotel {
    }
    public static void bookRooms(Hotel esql, String userID) {
       try{
-         // get user id
-         System.out.println(userID);
          System.out.println("Enter Hotel ID: ");
          String hotelID = in.readLine();
          int row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
@@ -494,31 +492,33 @@ public class Hotel {
          bookingQuery += userID + ", ";
          bookingQuery += hotelID + ", ";
          bookingQuery += roomNum + ", '";
-         bookingQuery += date + "')";
-         esql.executeUpdate(bookingQuery);
+         bookingQuery += date + "') RETURNING bookingID ";
+         String bookingID = esql.executeQueryAndReturnResult(bookingQuery).get(0).get(0);
 
-         String reservation = "SELECT * FROM Roombookings WHERE ";
-         reservation += "customerID = " + userID + " AND ";
-         reservation += "hotelID = " + hotelID + " AND ";
-         reservation += "bookingDate = '" + date + "'";
+         String reservation = "SELECT b.bookingID, b.customerID, b.hotelID, b.roomNumber, b.bookingDate, r.price FROM RoomBookings b, Rooms r WHERE ";
+         reservation += "bookingID = " + bookingID + " AND r.hotelID = b.hotelID AND r.roomNumber = b.roomNumber";
          List<List<String>> output = esql.executeQueryAndReturnResult(reservation);
          int rowCount = output.size();
 
-         System.out.printf("\n--------------------------------------------------------------------\n");
-         System.out.printf("|                         Your Reservatoin                         |\n");
-         System.out.printf("--------------------------------------------------------------------\n");
-         System.out.printf("| %10s | %11s | %8s | %11s | %12s |%n", "Booking ID", "Customer ID", "Hotel ID", "Room Number", "Booking Date");
-         System.out.printf("--------------------------------------------------------------------\n");
-         System.out.printf("| %10s | %11s | %8s | %11s | %12s |%n", output.get(0).get(0), output.get(0).get(1), output.get(0).get(2), output.get(0).get(3), output.get(0).get(4));
-         System.out.printf("--------------------------------------------------------------------\n");
+         System.out.printf("\n------------------------------------------------------------------------------\n");
+         System.out.printf("|                              Your Reservatoin                              |\n");
+         System.out.printf("------------------------------------------------------------------------------\n");
+         System.out.printf("| %10s | %11s | %8s | %11s | %12s | %7s |%n", "Booking ID", "Customer ID", "Hotel ID", "Room Number", "Booking Date", "Price");
+         System.out.printf("------------------------------------------------------------------------------\n");
+         System.out.printf("| %10s | %11s | %8s | %11s | %12s | %7s |%n", output.get(0).get(0), output.get(0).get(1), output.get(0).get(2), output.get(0).get(3), output.get(0).get(4), output.get(0).get(5));
+         System.out.printf("------------------------------------------------------------------------------\n");
          System.out.println ("total row(s): " + rowCount + "\n");
 
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
    }
-   public static void viewRecentBookingsfromCustomer(Hotel esql) {
-      
+   public static void viewRecentBookingsfromCustomer(Hotel esql, String userID) {
+      try{
+
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }     
    }
    public static void updateRoomInfo(Hotel esql) {
       //this is in manager mode
@@ -542,13 +542,8 @@ public class Hotel {
             hotelID = in.readLine();
             row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
          }
-
-         switch(choice)
-         {
-            case1: 
-         }
-      }catch(){
-
+      }catch(Exception e){
+         System.err.println (e.getMessage());
       }
    }
    public static void viewRecentUpdates(Hotel esql) {}
