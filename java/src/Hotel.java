@@ -422,7 +422,7 @@ public class Hotel {
          for(int i = 0; i < rowCount; i++){
             System.out.printf("| %8s | %-30s | %16s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2));
          }
-         System.out.printf("----------------------------------------------------------------\n");
+         System.out.printf("----------------------------------------------------------------\n\n");
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
@@ -450,7 +450,7 @@ public class Hotel {
          for(int i = 0; i < rowCount; i++){
             System.out.printf("| %8s | %11s | %7s | %30s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2), output.get(i).get(3));
          }
-         System.out.printf("---------------------------------------------------------------------\n");
+         System.out.printf("---------------------------------------------------------------------\n\n");
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
@@ -503,7 +503,7 @@ public class Hotel {
          System.out.printf("| %10s | %11s | %8s | %11s | %12s | %7s |%n", "Booking ID", "Customer ID", "Hotel ID", "Room Number", "Booking Date", "Price");
          System.out.printf("------------------------------------------------------------------------------\n");
          System.out.printf("| %10s | %11s | %8s | %11s | %12s | %7s |%n", output.get(0).get(0), output.get(0).get(1), output.get(0).get(2), output.get(0).get(3), output.get(0).get(4), output.get(0).get(5));
-         System.out.printf("------------------------------------------------------------------------------\n");
+         System.out.printf("------------------------------------------------------------------------------\n\n");
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
@@ -525,7 +525,7 @@ public class Hotel {
          for(int i = 0; i < rowCount; i++){
             System.out.printf("| %10s | %8s | %11s | %12s | %7s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2), output.get(i).get(3), output.get(i).get(4));
          }
-         System.out.printf("----------------------------------------------------------------\n");
+         System.out.printf("----------------------------------------------------------------\n\n");
       }catch(Exception e){
          System.err.println (e.getMessage());
       }     
