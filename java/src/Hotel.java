@@ -419,11 +419,10 @@ public class Hotel {
          System.out.printf("----------------------------------------------------------------\n");
          System.out.printf("| %8s | %-30s | %16s |%n", "Hotel ID", "Hotel Name", "Date Established");
          System.out.printf("----------------------------------------------------------------\n");
-         for(int i = 0; i < output.size(); i++){
+         for(int i = 0; i < rowCount; i++){
             System.out.printf("| %8s | %-30s | %16s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2));
          }
          System.out.printf("----------------------------------------------------------------\n");
-         System.out.println ("total row(s): " + rowCount + "\n");
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
@@ -448,11 +447,10 @@ public class Hotel {
          System.out.printf("---------------------------------------------------------------------\n");
          System.out.printf("| %8s | %11s | %7s | %-30s |%n", "Hotel ID", "Room Number", "Price", "Image URL");
          System.out.printf("---------------------------------------------------------------------\n");
-         for(int i = 0; i < output.size(); i++){
+         for(int i = 0; i < rowCount; i++){
             System.out.printf("| %8s | %11s | %7s | %30s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2), output.get(i).get(3));
          }
          System.out.printf("---------------------------------------------------------------------\n");
-         System.out.println ("total row(s): " + rowCount + "\n");
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
@@ -498,7 +496,6 @@ public class Hotel {
          String reservation = "SELECT b.bookingID, b.customerID, b.hotelID, b.roomNumber, b.bookingDate, r.price FROM RoomBookings b, Rooms r WHERE ";
          reservation += "bookingID = " + bookingID + " AND r.hotelID = b.hotelID AND r.roomNumber = b.roomNumber";
          List<List<String>> output = esql.executeQueryAndReturnResult(reservation);
-         int rowCount = output.size();
 
          System.out.printf("\n------------------------------------------------------------------------------\n");
          System.out.printf("|                              Your Reservatoin                              |\n");
@@ -507,15 +504,28 @@ public class Hotel {
          System.out.printf("------------------------------------------------------------------------------\n");
          System.out.printf("| %10s | %11s | %8s | %11s | %12s | %7s |%n", output.get(0).get(0), output.get(0).get(1), output.get(0).get(2), output.get(0).get(3), output.get(0).get(4), output.get(0).get(5));
          System.out.printf("------------------------------------------------------------------------------\n");
-         System.out.println ("total row(s): " + rowCount + "\n");
-
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
    }
    public static void viewRecentBookingsfromCustomer(Hotel esql, String userID) {
       try{
+         String histortQuery = "SELECT b.bookingID, b.hotelID, b.roomNumber, b.bookingDate, r.price FROM RoomBookings b, Rooms r WHERE b.customerID = ";
+         histortQuery += userID;
+         histortQuery += " AND b.bookingDate <= CURRENT_DATE AND r.hotelID = b.hotelID AND r.roomNumber = b.roomNumber ORDER BY b.bookingDate DESC LIMIT 5";
+         
+         List<List<String>> output = esql.executeQueryAndReturnResult(histortQuery);
+         int rowCount = output.size();
 
+         System.out.printf("\n----------------------------------------------------------------\n");
+         System.out.printf("|                  Your Recent Booking History                 |\n");
+         System.out.printf("----------------------------------------------------------------\n");
+         System.out.printf("| %10s | %8s | %11s | %12s | %7s |%n", "Booking ID", "Hotel ID", "Room Number", "Booking Date", "Price");
+         System.out.printf("----------------------------------------------------------------\n");
+         for(int i = 0; i < rowCount; i++){
+            System.out.printf("| %10s | %8s | %11s | %12s | %7s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2), output.get(i).get(3), output.get(i).get(4));
+         }
+         System.out.printf("----------------------------------------------------------------\n");
       }catch(Exception e){
          System.err.println (e.getMessage());
       }     
