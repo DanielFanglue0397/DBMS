@@ -579,6 +579,22 @@ public class Hotel {
             hotelID = in.readLine();
             row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
          }
+        
+        integer i = 0;
+        while(i < 2)
+        {
+         case 1:
+         String query = "UPDATE Rooms SET price = price WHERE Rooms.price IS NOT FULL";
+         query += Rooms.price;
+         List<List<String>> output = esql.executeQueryAndReturnResult(query);
+         break;
+         case 2:
+         String query = "UPDATE ROOMS SET price = price WHERE Rooms.price IS NOT NULL";
+          query += Rooms.imageURL;
+         List<List<String>> output = esql.executeQueryAndReturnResult(query);
+         break;
+        }
+
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
