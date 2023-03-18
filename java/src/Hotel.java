@@ -584,13 +584,15 @@ public class Hotel {
         while(i < 2)
         {
          case 1:
-         String query = "UPDATE Rooms SET price = price WHERE Rooms.price IS NOT FULL";
+         String query = "UPDATE Rooms SET price = ";
          query += Rooms.price;
+         query += "WHERE Rooms.price IS NOT FULL";
          List<List<String>> output = esql.executeQueryAndReturnResult(query);
          break;
          case 2:
-         String query = "UPDATE ROOMS SET price = price WHERE Rooms.price IS NOT NULL";
+         String query = "UPDATE ROOMS SET price = ";
           query += Rooms.imageURL;
+          query += " WHERE Rooms.imageURL IS NOT NULL";
          List<List<String>> output = esql.executeQueryAndReturnResult(query);
          break;
         }
