@@ -330,7 +330,7 @@ public class Hotel {
                         case 5: updateRoomInfo(esql); break;
                         case 6: viewRecentUpdates(esql); break;
                         case 7: viewBookingHistoryofHotel(esql, authorisedUser); break;
-                        case 8: viewRegularCustomers(esql); break;
+                        case 8: viewRegularCustomers(esql, authorisedUser); break;
                         case 9: placeRoomRepairRequests(esql); break;
                         case 10: viewRoomRepairHistory(esql); break;
                         case 20: managermenu = false; break;
@@ -456,8 +456,14 @@ public class Hotel {
    }
    public static void viewRooms(Hotel esql) {
       try{
-         System.out.print("\tEnter hotel ID: ");
+         System.out.print("\tEnter Hotel ID: ");
          String hotelID = in.readLine();
+         int row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
+         while (row == 0){
+            System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
+            hotelID = in.readLine();
+            row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
+         }
          System.out.print("\tEnter a date (MM/DD/YYYY): ");
          String date = in.readLine();
 
@@ -469,7 +475,7 @@ public class Hotel {
          List<List<String>> output = esql.executeQueryAndReturnResult(query);
          int rowCount = output.size();
          System.out.printf("\n---------------------------------------------------------------------\n");
-         String title = String.format("                   Rooms Available on %s                   ", date);
+         String title = String.format("|                   Rooms Available on %10s                   |", date);
          System.out.println(title);
          System.out.printf("---------------------------------------------------------------------\n");
          System.out.printf("| %8s | %11s | %7s | %-30s |%n", "Hotel ID", "Room Number", "Price", "Image URL");
@@ -484,31 +490,31 @@ public class Hotel {
    }
    public static void bookRooms(Hotel esql, String userID) {
       try{
-         System.out.println("Enter Hotel ID: ");
+         System.out.print("\tEnter Hotel ID: ");
          String hotelID = in.readLine();
          int row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
          while (row == 0){
-            System.out.println("Invalid Hotel ID. Enter hotel ID: ");
+            System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
             hotelID = in.readLine();
             row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
          }
 
-         System.out.println("Enter Room Number: ");
+         System.out.print("\tEnter Room Number: ");
          String roomNum = in.readLine();
          row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
          while (row == 0){
-            System.out.println("Invalid Room Number. Enter Room Number: ");
+            System.out.print("\tInvalid Room Number. Enter Room Number: ");
             hotelID = in.readLine();
             row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
          }
          
-         System.out.println("Enter Date (MM/DD/YYYY): ");
+         System.out.print("\tEnter Date (MM/DD/YYYY): ");
          String date = in.readLine();
          row = esql.executeQuery("SELECT bookingDate FROM roomBookings WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID + " AND bookingDate = '" + date + "'");
          while (row != 0){
-            String notAvailable = String.format("Room %s at Hotel ID %s is not available on %s", roomNum, hotelID, date);
-            System.out.println(notAvailable);
-            System.out.println("Enter another date (MM/DD/YYYY): ");
+            String notAvailable = String.format("\tRoom %s at Hotel ID %s is not available on %s", roomNum, hotelID, date);
+            System.out.print(notAvailable);
+            System.out.print("\n\tEnter another date (MM/DD/YYYY): ");
             date = in.readLine();
             row = esql.executeQuery("SELECT bookingDate FROM roomBookings WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID + " AND bookingDate = '" + date + "'");
          }
@@ -558,49 +564,49 @@ public class Hotel {
       }     
    }
    public static void updateRoomInfo(Hotel esql) {
-      //this is in manager mode
-      //first, need to make sure the user is nagager, not normal user
-      //only update price and image_url
-      try{
-         System.out.println("Enter Hotel ID: ");
-         String hotelID = in.readLine();
-         int row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
-         while (row == 0){
-            System.out.println("Invalid Hotel ID. Enter hotel ID: ");
-            hotelID = in.readLine();
-            row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
-         }
+      // //this is in manager mode
+      // //first, need to make sure the user is nagager, not normal user
+      // //only update price and image_url
+      // try{
+      //    System.out.println("Enter Hotel ID: ");
+      //    String hotelID = in.readLine();
+      //    int row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
+      //    while (row == 0){
+      //       System.out.println("Invalid Hotel ID. Enter hotel ID: ");
+      //       hotelID = in.readLine();
+      //       row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
+      //    }
 
-         System.out.println("Enter Room Number: ");
-         String roomNum = in.readLine();
-         row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
-         while (row == 0){
-            System.out.println("Invalid Room Number. Enter Room Number: ");
-            hotelID = in.readLine();
-            row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
-         }
+      //    System.out.println("Enter Room Number: ");
+      //    String roomNum = in.readLine();
+      //    row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
+      //    while (row == 0){
+      //       System.out.println("Invalid Room Number. Enter Room Number: ");
+      //       hotelID = in.readLine();
+      //       row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
+      //    }
         
-        integer i = 0;
-        while(i < 2)
-        {
-         case 1:
-            String query = "UPDATE Rooms SET price = ";
-            query += Rooms.price;
-            query += "WHERE Rooms.price IS NOT FULL";
-            List<List<String>> output = esql.executeQueryAndReturnResult(query);
-            break;
-         case 2:
-            String query = "UPDATE ROOMS SET price = ";
-            query += Rooms.imageURL;
-            query += " WHERE Rooms.imageURL IS NOT NULL";
-            List<List<String>> output = esql.executeQueryAndReturnResult(query);
-            break;
-         default : System.out.println("Unrecognized choice!"); break;
-        }
+      //   integer i = 0;
+      //   while(i < 2)
+      //   {
+      //    case 1:
+      //       String query = "UPDATE Rooms SET price = ";
+      //       query += Rooms.price;
+      //       query += "WHERE Rooms.price IS NOT FULL";
+      //       List<List<String>> output = esql.executeQueryAndReturnResult(query);
+      //       break;
+      //    case 2:
+      //       String query = "UPDATE ROOMS SET price = ";
+      //       query += Rooms.imageURL;
+      //       query += " WHERE Rooms.imageURL IS NOT NULL";
+      //       List<List<String>> output = esql.executeQueryAndReturnResult(query);
+      //       break;
+      //    default : System.out.println("Unrecognized choice!"); break;
+      //   }
 
-      }catch(Exception e){
-         System.err.println (e.getMessage());
-      }
+      // }catch(Exception e){
+      //    System.err.println (e.getMessage());
+      // }
    }
    public static void viewRecentUpdates(Hotel esql) {}
    public static void viewBookingHistoryofHotel(Hotel esql, String userID) {
@@ -614,12 +620,11 @@ public class Hotel {
          query += " AND h.hotelID = b.hotelID AND b.hotelID = r.hotelID AND b.customerID = u.userID AND b.roomNumber = r.roomNumber AND b.bookingDate BETWEEN '";
          query += startDate + "' AND '" + endDate + "'";
          query += " ORDER By b.bookingDate DESC";
-         System.out.println(query);
          List<List<String>> output = esql.executeQueryAndReturnResult(query);
          int rowCount = output.size();
 
          System.out.printf("\n---------------------------------------------------------------------------------------------------------------------\n");
-         String title = String.format("                                    Booking History From %s to %s                                   ", startDate, endDate);
+         String title = String.format("|                                   Booking History From %10s to %10s                                   |", startDate, endDate);
          System.out.println(title);
          System.out.printf("---------------------------------------------------------------------------------------------------------------------\n");
          System.out.printf("| %10s | %-50s | %8s | %11s | %12s | %7s |%n", "Booking ID", "Customer Name", "Hotel ID", "Room Number", "Booking Date", "Price");
@@ -632,7 +637,38 @@ public class Hotel {
          System.err.println(e.getMessage());
       }
    }
-   public static void viewRegularCustomers(Hotel esql) {}
+   public static void viewRegularCustomers(Hotel esql, String userID) {
+      try{
+         System.out.print("\tEnter Hotel ID: ");
+         String hotelID = in.readLine();
+         int row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID + " AND managerUserID = " + userID);
+         while (row == 0){
+            System.out.print("\tInvalid hotel ID or you don't manage that hotel.\n\tEnter hotel ID: ");
+            hotelID = in.readLine();
+            row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID + " AND managerUserID = " + userID);
+         }
+
+         String query = "SELECT u.userID, u.name, COUNT(*) AS numberOfBooking FROM Users u, RoomBookings b WHERE ";
+         query += "b.hotelID = " + hotelID;
+         query += " AND b.customerID = u.userID GROUP BY u.userID, u.name ORDER BY numberOfBooking DESC LIMIT 5";
+         List<List<String>> output = esql.executeQueryAndReturnResult(query);
+         int rowCount = output.size();
+        
+         int inthotelID = Integer.parseInt(hotelID);
+         System.out.printf("\n--------------------------------------------------------------------------------\n");
+         String title = String.format("|                    Top 5 Regular Customer at Hotel ID: %2d                    |", inthotelID);
+         System.out.println(title);
+         System.out.printf("--------------------------------------------------------------------------------\n");
+         System.out.printf("| %7s | %-50s | %13s |%n", "User ID", "Customer Name", "Bookings Made");
+         System.out.printf("--------------------------------------------------------------------------------\n");
+         for(int i = 0; i < rowCount; i++){
+            System.out.printf("| %7s | %-50s | %13s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2));
+         }
+         System.out.printf("--------------------------------------------------------------------------------\n\n");
+      }catch(Exception e){
+         System.err.println(e.getMessage());
+      }
+   }
    public static void placeRoomRepairRequests(Hotel esql) {}
    public static void viewRoomRepairHistory(Hotel esql) {}
 

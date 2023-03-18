@@ -34,6 +34,10 @@ FROM RoomBookings b, Hotel h, Rooms r, Users u
 WHERE h.managerUserID = 25 AND h.hotelID = b.hotelID AND b.hotelID = r.hotelID AND b.customerID = u.userID AND b.roomNumber = r.roomNumber AND b.bookingDate BETWEEN '05/01/2018' AND '03/21/2023'
 ORDER By b.bookingDate DESC;
 
-SELECT b.bookingID, u.name, b.hotelID, b.roomNumber, b.bookingDate, r.price
-FROM RoomBookings b, Hotel h, Rooms r, Users u
-WHERE h.managerUserID = 1 AND h.hotelID = b.hotelID AND b.hotelID = r.hotelID AND b.customerID = u.userID AND b.roomNumber = r.roomNumber AND b.bookingDate BETWEEN '05/01/2018' AND '03/21/2023' ORDER By b.bookingDate DESC;
+-- viewRegularCustomers
+SELECT u.userID, u.name, COUNT(*) AS numberOfBooking
+FROM Users u, RoomBookings b
+WHERE b.hotelID = 1 AND b.customerID = u.userID
+GROUP BY u.userID, u.name
+ORDER BY numberOfBooking DESC
+LIMIT 5;
