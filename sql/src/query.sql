@@ -41,3 +41,13 @@ WHERE b.hotelID = 1 AND b.customerID = u.userID
 GROUP BY u.userID, u.name
 ORDER BY numberOfBooking DESC
 LIMIT 5;
+
+-- updateRoomInfo
+UPDATE Rooms SET price = 99999 WHERE hotelID = 2 AND roomNumber = 9;
+SELECT * FROM Rooms WHERE hotelID = 2 AND roomNumber = 9;
+
+UPDATE Rooms SET imageURL = 'wow' WHERE hotelID = 2 AND roomNumber = 9;
+SELECT * FROM Rooms WHERE hotelID = 2 AND roomNumber = 9;
+
+SELECT * FROM RoomUpdatesLog WHERE managerID = 20
+ORDER BY updatedOn DESC;
