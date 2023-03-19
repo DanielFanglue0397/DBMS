@@ -52,3 +52,7 @@ SELECT * FROM Rooms WHERE hotelID = 2 AND roomNumber = 9;
 -- viewRecentUpdates
 SELECT * FROM RoomUpdatesLog WHERE managerID = 20
 ORDER BY updatedOn DESC;
+
+-- placeRoomRepairRequests
+-- INSERT INTO RoomRepairs (companyID, hotelID, roomNumber, repairDate) VALUES (1, 1, 1, CURRENT_DATE);
+SELECT * FROM RoomRepairRequests;
