@@ -673,6 +673,7 @@ public class Hotel {
          String startDate = in.readLine();
          System.out.print("\tTo the date (MM/DD/YYYY): ");
          String endDate = in.readLine();
+         
          String query = "SELECT b.bookingID, u.name, b.hotelID, b.roomNumber, b.bookingDate, r.price FROM RoomBookings b, Hotel h, Rooms r, Users u WHERE h.managerUserID = ";
          query += userID;
          query += " AND h.hotelID = b.hotelID AND b.hotelID = r.hotelID AND b.customerID = u.userID AND b.roomNumber = r.roomNumber AND b.bookingDate BETWEEN '";
@@ -775,7 +776,26 @@ public class Hotel {
          System.err.println(e.getMessage());
       }
    }
-   public static void viewRoomRepairHistory(Hotel esql, String userID) {}
+   public static void viewRoomRepairHistory(Hotel esql, String userID) {
+      try{
+         String repairHistory = "SELECT r.repairid, r.companyid, r.hotelid, r.roomnumber, r.repairdate FROM RoomRepairs r, Hotel h WHERE r.hotelID = h.hotelID AND h.managerUserID = ";
+         repairHistory += userID + " ORDER BY r.repairdate DESC";
+         List<List<String>> output = esql.executeQueryAndReturnResult(repairHistory);
+         int rowCount = output.size();
+
+         System.out.printf("\n-----------------------------------------------------------------\n");
+         System.out.printf("|                        Repair History                         |\n");
+         System.out.printf("-----------------------------------------------------------------\n");
+         System.out.printf("| %9s | %10s | %8s | %11s | %11s |%n", "Repair ID", "Company ID", "Hotel ID", "Room Number", "Repair Date");
+         System.out.printf("-----------------------------------------------------------------\n");
+         for(int i = 0; i < rowCount; i++){
+            System.out.printf("| %9s | %10s | %8s | %11s | %11s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2), output.get(i).get(3), output.get(i).get(4));
+         }
+         System.out.printf("-----------------------------------------------------------------\n\n");
+      }catch(Exception e){
+         System.err.println(e.getMessage());
+      }
+   }
 
 }//end Hotel
 

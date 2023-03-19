@@ -56,3 +56,8 @@ ORDER BY updatedOn DESC;
 -- placeRoomRepairRequests
 -- INSERT INTO RoomRepairs (companyID, hotelID, roomNumber, repairDate) VALUES (1, 1, 1, CURRENT_DATE);
 SELECT * FROM RoomRepairRequests;
+
+-- viewRoomRepairHistory
+SELECT r.repairid, r.companyid, r.hotelid, r.roomnumber, r.repairdate
+FROM RoomRepairs r, Hotel h
+WHERE r.hotelID = h.hotelID AND h.managerUserID = 25;
