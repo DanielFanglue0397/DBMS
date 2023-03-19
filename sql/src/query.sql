@@ -49,5 +49,6 @@ SELECT * FROM Rooms WHERE hotelID = 2 AND roomNumber = 9;
 UPDATE Rooms SET imageURL = 'wow' WHERE hotelID = 2 AND roomNumber = 9;
 SELECT * FROM Rooms WHERE hotelID = 2 AND roomNumber = 9;
 
+-- viewRecentUpdates
 SELECT * FROM RoomUpdatesLog WHERE managerID = 20
 ORDER BY updatedOn DESC;

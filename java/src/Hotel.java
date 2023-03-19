@@ -328,7 +328,7 @@ public class Hotel {
                         case 3: bookRooms(esql, authorisedUser); break;
                         case 4: viewRecentBookingsfromCustomer(esql, authorisedUser); break;
                         case 5: updateRoomInfo(esql, authorisedUser); break;
-                        case 6: viewRecentUpdates(esql); break;
+                        case 6: viewRecentUpdates(esql, authorisedUser); break;
                         case 7: viewBookingHistoryofHotel(esql, authorisedUser); break;
                         case 8: viewRegularCustomers(esql, authorisedUser); break;
                         case 9: placeRoomRepairRequests(esql); break;
@@ -648,7 +648,26 @@ public class Hotel {
          System.err.println(e.getMessage());
       }
    }
-   public static void viewRecentUpdates(Hotel esql) {}
+   public static void viewRecentUpdates(Hotel esql, String userID) {
+      try{
+         String updateLogQuery = "SELECT * FROM RoomUpdatesLog WHERE managerID = ";
+         updateLogQuery += userID + " ORDER BY updatedOn DESC LIMIT 5";
+         List<List<String>> output = esql.executeQueryAndReturnResult(updateLogQuery);
+         int rowCount = output.size();
+
+         System.out.printf("\n-----------------------------------------------------------------------------\n");
+         System.out.printf("|                           Last 5 Recent Updates                           |\n");
+         System.out.printf("-----------------------------------------------------------------------------\n");
+         System.out.printf("| %13s | %10s | %8s | %11s | %19s |%n", "Update Number", "Manager ID", "Hotel ID", "Room Number", "Updated On");
+         System.out.printf("-----------------------------------------------------------------------------\n");
+         for(int i = 0; i < rowCount; i++){
+            System.out.printf("| %13s | %10s | %8s | %11s | %19s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2), output.get(i).get(3), output.get(i).get(4));
+         }
+         System.out.printf("-----------------------------------------------------------------------------\n\n");
+      }catch(Exception e){
+         System.err.println(e.getMessage());
+      }
+   }
    public static void viewBookingHistoryofHotel(Hotel esql, String userID) {
       try{
          System.out.print("\tSee history from the date (MM/DD/YYYY): ");
