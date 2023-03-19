@@ -470,7 +470,7 @@ public class Hotel {
          String query = "SELECT r.hotelID, r.roomNumber, r.price, r.imageURL FROM rooms r WHERE NOT EXISTS (SELECT * FROM roombookings b WHERE r.hotelID = hotelID AND r.roomNumber = b.roomNumber AND b.bookingDate = '";
          query += date + "')";
          query += "AND r.hotelID = ";
-         query += hotelID;
+         query += hotelID  + " ORDER BY r.roomNumber";
          
          List<List<String>> output = esql.executeQueryAndReturnResult(query);
          int rowCount = output.size();
@@ -594,8 +594,50 @@ public class Hotel {
                System.out.println("8. Update other room.");
                System.out.println("9. < Return to Main Menu.");
                switch (readChoice()){
-                  case 1: System.out.println("price"); break;
-                  case 2: System.out.println("url"); break;
+                  case 1:
+                     System.out.print("\tEnter the new price: $");
+                     String newPrice = in.readLine();
+                     String priceQuery = "UPDATE Rooms SET price = ";
+                     priceQuery += newPrice;
+                     priceQuery += " WHERE hotelID = " + hotelID;
+                     priceQuery += " AND roomNumber = " + roomNum;
+                     esql.executeUpdate(priceQuery);
+
+                     String showPriceResult = "SELECT * FROM Rooms ";
+                     showPriceResult += " WHERE hotelID = " + hotelID;
+                     showPriceResult += " AND roomNumber = " + roomNum;
+                     List<List<String>> priceOutput = esql.executeQueryAndReturnResult(showPriceResult);
+
+                     System.out.printf("\n---------------------------------------------------------------------\n");
+                     System.out.printf("|                           Updated Info                            |\n");
+                     System.out.printf("---------------------------------------------------------------------\n");
+                     System.out.printf("| %8s | %11s | %7s | %-30s |%n", "Hotel ID", "Room Number", "Price", "Image URL");
+                     System.out.printf("---------------------------------------------------------------------\n");
+                     System.out.printf("| %8s | %11s | %7s | %30s |%n", priceOutput.get(0).get(0), priceOutput.get(0).get(1), priceOutput.get(0).get(2), priceOutput.get(0).get(3));
+                     System.out.printf("---------------------------------------------------------------------\n\n");
+                     break;
+                  case 2: 
+                     System.out.print("\tEnter the new image URL: ");
+                     String newUrl = in.readLine();
+                     String urlQuery = "UPDATE Rooms SET imageURL = '";
+                     urlQuery += newUrl + "'";
+                     urlQuery += " WHERE hotelID = " + hotelID;
+                     urlQuery += " AND roomNumber = " + roomNum;
+                     esql.executeUpdate(urlQuery);
+
+                     String showUrlResult = "SELECT * FROM Rooms ";
+                     showUrlResult += " WHERE hotelID = " + hotelID;
+                     showUrlResult += " AND roomNumber = " + roomNum;
+                     List<List<String>> urlOutput = esql.executeQueryAndReturnResult(showUrlResult);
+
+                     System.out.printf("\n---------------------------------------------------------------------\n");
+                     System.out.printf("|                           Updated Info                            |\n");
+                     System.out.printf("---------------------------------------------------------------------\n");
+                     System.out.printf("| %8s | %11s | %7s | %-30s |%n", "Hotel ID", "Room Number", "Price", "Image URL");
+                     System.out.printf("---------------------------------------------------------------------\n");
+                     System.out.printf("| %8s | %11s | %7s | %30s |%n", urlOutput.get(0).get(0), urlOutput.get(0).get(1), urlOutput.get(0).get(2), urlOutput.get(0).get(3));
+                     System.out.printf("---------------------------------------------------------------------\n\n");
+                     break;
                   case 8: updateMenu = false; break;
                   case 9: updateMenu = false; keepon = false; break;
                   default : System.out.println("\nUnrecognized choice!\n"); break;
