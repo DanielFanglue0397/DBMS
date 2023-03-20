@@ -279,72 +279,86 @@ public class Hotel {
          String user = args[2];
          esql = new Hotel (dbname, dbport, user, "");
          boolean attempted = false;
+         boolean badchoice = false;
          boolean keepon = true;
-         Greeting();
          while(keepon) {
+            Greeting();
             if (attempted) {
-               System.out.println(ANSI_RED +"\n⚠  We can't find that userID and password. Please try again." + ANSI_RESET);
+               attempted = false;
+               System.out.println(ANSI_RED +"\nWe can't find that userID and password. Please try again." + ANSI_RESET);
             }
-            // These are sample SQL statements
-            System.out.println("\nMAIN MENU");
-            System.out.println("---------");
+            if (badchoice) {
+               badchoice = false;
+               System.out.println(ANSI_RED +"\nUnrecognized choice!" + ANSI_RESET);
+            }
+            System.out.println();
             System.out.println("1. Create user");
             System.out.println("2. Log in");
             System.out.println("9. < EXIT");
+            System.out.println("----------------------------------------------------------");
             String authorisedUser = null;
             switch (readChoice()){
                case 1: CreateUser(esql); break;
                case 2: authorisedUser = LogIn(esql); attempted = true; break;
                case 9: keepon = false; break;
-               default : System.out.println("\nUnrecognized choice!"); break;
+               default : badchoice = true; break;
             }//end switch
             if (authorisedUser != null) {
-               attempted = false;
                String query = "SELECT u.userType FROM Users u WHERE u.userID = " + authorisedUser;
                String userType = esql.executeQueryAndReturnResult(query).get(0).get(0);
                if (userType.toLowerCase().contains("customer")) {
-                  boolean usermenu = true;
-                  
+                  boolean usermenu = true;                  
                   while(usermenu) {
-                     System.out.println("\nMAIN MENU");
-                     System.out.println("---------");
-                     System.out.println("1. View Hotels within 30 units");
-                     System.out.println("2. View Rooms");
-                     System.out.println("3. Book a Room");
-                     System.out.println("4. View recent booking history");
-
-                     System.out.println(".........................");
-                     System.out.println("20. Log out");
+                     System.out.println();
+                     System.out.println("----------------------------------------------------------");
+                     System.out.println("|" + ANSI_YELLOW + "                     User Main Menu                     " + ANSI_RESET + "|");
+                     System.out.println("----------------------------------------------------------");                
+                     System.out.println("| 1. View Hotels within 30 units                         |");
+                     System.out.println("| 2. View Rooms                                          |");
+                     System.out.println("| 3. Book a Room                                         |");
+                     System.out.println("| 4. View recent booking history                         |");
+                     System.out.println("----------------------------------------------------------");
+                     System.out.println("| 20. Log out                                            |");
+                     System.out.println("----------------------------------------------------------");                
+                     if (badchoice) {
+                        badchoice = false;
+                        System.out.println(ANSI_RED +"Unrecognized choice!" + ANSI_RESET);
+                     }
                      switch (readChoice()){
                         case 1: viewHotels(esql); break;
                         case 2: viewRooms(esql); break;
                         case 3: bookRooms(esql, authorisedUser); break;
                         case 4: viewRecentBookingsfromCustomer(esql, authorisedUser); break;
-                        case 20: usermenu = false; break;
-                        default : System.out.println("\nUnrecognized choice!\n"); break;
+                        case 20: usermenu = false; attempted = false; break;
+                        default : badchoice = true; break;
                      }
                   }
                }else {
-                  boolean managermenu = true;
-                  
+                  boolean managermenu = true;                  
                   while(managermenu) {
-                     System.out.println("\nMAIN MENU");
-                     System.out.println("---------");
-                     System.out.println("1. View Hotels within 30 units");
-                     System.out.println("2. View Rooms");
-                     System.out.println("3. Book a Room");
-                     System.out.println("4. View recent booking history");
+                     System.out.println();
+                     System.out.println("----------------------------------------------------------");
+                     System.out.println("|" + ANSI_YELLOW + "                    Manager Main Menu                   " + ANSI_RESET + "|");
+                     System.out.println("----------------------------------------------------------"); 
+                     System.out.println("| 1. View Hotels within 30 units                         |");
+                     System.out.println("| 2. View Rooms                                          |");
+                     System.out.println("| 3. Book a Room                                         |");
+                     System.out.println("| 4. View recent booking history                         |");
    
                      //the following functionalities basically used by managers
-                     System.out.println("5. Update Room Information");
-                     System.out.println("6. View 5 recent Room Updates Info");
-                     System.out.println("7. View booking history of the hotel");
-                     System.out.println("8. View 5 regular Customers");
-                     System.out.println("9. Place room repair Request to a company");
-                     System.out.println("10. View room repair Requests history");
-   
-                     System.out.println(".........................");
-                     System.out.println("20. Log out");
+                     System.out.println("| 5. Update Room Information                             |");
+                     System.out.println("| 6. View 5 recent Room Updates Info                     |");
+                     System.out.println("| 7. View booking history of the hotel                   |");
+                     System.out.println("| 8. View 5 regular Customers                            |");
+                     System.out.println("| 9. Place room repair Request to a company              |");
+                     System.out.println("| 10. View room repair Requests history                  |");
+                     System.out.println("----------------------------------------------------------");
+                     System.out.println("| 20. Log out                                            |");
+                     System.out.println("----------------------------------------------------------");                
+                     if (badchoice) {
+                        badchoice = false;
+                        System.out.println(ANSI_RED +"Unrecognized choice!" + ANSI_RESET);
+                     }
                      switch (readChoice()){
                         case 1: viewHotels(esql); break;
                         case 2: viewRooms(esql); break;
@@ -356,8 +370,8 @@ public class Hotel {
                         case 8: viewRegularCustomers(esql, authorisedUser); break;
                         case 9: placeRoomRepairRequests(esql, authorisedUser); break;
                         case 10: viewRoomRepairHistory(esql, authorisedUser); break;
-                        case 20: managermenu = false; break;
-                        default : System.out.println("Unrecognized choice!"); break;
+                        case 20: managermenu = false; attempted = false; break;
+                        default : badchoice = true; break;
                      }                  
                   }
                }
@@ -371,7 +385,7 @@ public class Hotel {
             if(esql != null) {
                System.out.print("Disconnecting from database...");
                esql.cleanup ();
-               System.out.println("Done\n\nBye !");
+               System.out.println("Done\n\nThank you for using the Hotel Database Management System!");
             }//end if
          }catch (Exception e) {
             // ignored.
@@ -383,14 +397,17 @@ public class Hotel {
       System.out.println();      
       System.out.println();      
       System.out.println();      
-      System.out.println("═══════════════════════ Welcome To ═══════════════════════\n");
-      System.out.println("        ██╗  ██╗ ██████╗ ████████╗███████╗██╗             ");
-      System.out.println("        ██║  ██║██╔═══██╗╚══██╔══╝██╔════╝██║             ");      
-      System.out.println("        ███████║██║   ██║   ██║   █████╗  ██║             ");      
-      System.out.println("        ██╔══██║██║   ██║   ██║   ██╔══╝  ██║             ");      
-      System.out.println("        ██║  ██║╚██████╔╝   ██║   ███████╗███████╗        ");      
-      System.out.println("        ╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚══════╝╚══════╝        ");      
-      System.out.println("\n═══════════════ Database management System ═══════════════");                                          
+      System.out.println(ANSI_YELLOW +"======================= Welcome To =======================" + ANSI_RESET);
+      System.out.println(ANSI_CYAN + "         ___       ___       ___       ___       ___   " + ANSI_RESET);
+      System.out.println(ANSI_CYAN + "        /\\__\\     /\\  \\     /\\  \\     /\\  \\     /\\__\\  " + ANSI_RESET);
+      System.out.println(ANSI_CYAN + "       /:/__/_   /::\\  \\    \\:\\  \\   /::\\  \\   /:/  /  " + ANSI_RESET);
+      System.out.println(ANSI_CYAN + "      /::\\/\\__\\ /:/\\:\\__\\   /::\\__\\ /::\\:\\__\\ /:/__/   " + ANSI_RESET);
+      System.out.println(ANSI_CYAN + "      \\/\\::/  / \\:\\/:/  /  /:/\\/__/ \\:\\:\\/  / \\:\\  \\   " + ANSI_RESET);
+      System.out.println(ANSI_CYAN + "        /:/  /   \\::/  /   \\/__/     \\:\\/  /   \\:\\__\\  " + ANSI_RESET);
+      System.out.println(ANSI_CYAN + "        \\/__/     \\/__/               \\/__/     \\/__/  " + ANSI_RESET);
+      System.out.println();      
+      System.out.println(ANSI_YELLOW + "                Database Management System                " + ANSI_RESET);      
+      System.out.println(ANSI_YELLOW + "==========================================================" + ANSI_RESET);                                          
    }//end Greeting
 
    /*
@@ -406,7 +423,7 @@ public class Hotel {
             input = Integer.parseInt(in.readLine());
             break;
          }catch (Exception e) {
-            System.out.println("Your input is invalid!");
+            System.out.println(ANSI_RED + "Your input is invalid!" + ANSI_RESET);
             continue;
          }//end try
       }while (true);
