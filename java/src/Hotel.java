@@ -280,6 +280,7 @@ public class Hotel {
          esql = new Hotel (dbname, dbport, user, "");
          boolean attempted = false;
          boolean badchoice = false;
+         boolean newUserCreated = false;
          boolean keepon = true;
          while(keepon) {
             Greeting();
@@ -291,6 +292,10 @@ public class Hotel {
                badchoice = false;
                System.out.println(ANSI_RED +"\nUnrecognized choice!" + ANSI_RESET);
             }
+            if (newUserCreated) {
+               newUserCreated = false;
+               System.out.println (ANSI_GREEN + "\nUser successfully created with userID = " + esql.getNewUserID("SELECT last_value FROM users_userID_seq") + ANSI_RESET);         
+            }
             System.out.println();
             System.out.println("1. Create user");
             System.out.println("2. Log in");
@@ -298,7 +303,7 @@ public class Hotel {
             System.out.println("----------------------------------------------------------");
             String authorisedUser = null;
             switch (readChoice()){
-               case 1: CreateUser(esql); break;
+               case 1: CreateUser(esql); newUserCreated = true; break;
                case 2: authorisedUser = LogIn(esql); attempted = true; break;
                case 9: keepon = false; break;
                default : badchoice = true; break;
@@ -429,6 +434,26 @@ public class Hotel {
       }while (true);
       return input;
    }//end readChoice
+   
+   /*
+    * Reads the userID given from the keyboard
+    * @int
+    **/
+   public static int readUserID() {
+      int input;
+      // returns only if a correct value is given.
+      do { // read the integer, parse it and break.
+         try {
+            input = Integer.parseInt(in.readLine());
+            break;
+         }catch (Exception e){
+            System.out.println(ANSI_RED + "\tUserID should only contain integers!" + ANSI_RESET);
+            System.out.print("\tEnter userID: ");
+            continue;
+         }
+      }while (true);
+      return input;
+   }//end readUserID
 
    /*
     * Creates a new user
@@ -442,13 +467,10 @@ public class Hotel {
          String type="customer";
 			String query = String.format("INSERT INTO USERS (name, password, userType) VALUES ('%s','%s', '%s')", name, password, type);
          esql.executeUpdate(query);
-         System.out.println ("User successfully created with userID = " + esql.getNewUserID("SELECT last_value FROM users_userID_seq"));
-         
       }catch(Exception e){
          System.err.println (e.getMessage ());
       }
    }//end CreateUser
-
 
    /*
     * Check log in credentials for an existing user
@@ -457,7 +479,7 @@ public class Hotel {
    public static String LogIn(Hotel esql){
       try{
          System.out.print("\tEnter userID: ");
-         String userID = in.readLine();
+         String userID = Integer.toString(readUserID());
          System.out.print("\tEnter password: ");
          String password = in.readLine();
 
