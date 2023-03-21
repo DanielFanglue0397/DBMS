@@ -551,7 +551,7 @@ public class Hotel {
          System.out.print("\tEnter Room Number: ");
          try{
             roomNum = readInt();
-            int row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
+            int row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE HotelID = " + hotelID + " AND roomNumber = "+ roomNum);
             if (row > 0) {
                roomNumberCheck = false;
                return roomNum;
@@ -671,8 +671,8 @@ public class Hotel {
             date = getValidDate(esql);
          }
 
-         String query = "SELECT r.hotelID, r.roomNumber, r.price, r.imageURL FROM rooms r WHERE NOT EXISTS (SELECT * FROM roombookings b WHERE r.hotelID = hotelID AND r.roomNumber = b.roomNumber AND b.bookingDate = '";
-         query += date + "')";
+         String query = "SELECT r.hotelID, r.roomNumber, r.price, r.imageURL FROM rooms r WHERE NOT EXISTS (SELECT * FROM roombookings b WHERE b.bookingDate = '";
+         query += date + "' AND r.hotelID = hotelID AND r.roomNumber = b.roomNumber)";
          query += "AND r.hotelID = ";
          query += hotelID  + " ORDER BY r.roomNumber";
          
@@ -710,7 +710,7 @@ public class Hotel {
             int row = 1;
             while(row != 0){
                date = getValidDate(esql);
-               row = esql.executeQuery("SELECT bookingDate FROM roomBookings WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID + " AND bookingDate = '" + date + "'");
+               row = esql.executeQuery("SELECT bookingDate FROM roomBookings WHERE bookingDate = '" + date + "' AND roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
                if (row != 0){
                   System.out.println(ANSI_RED + String.format("\tRoom %s at Hotel ID %s is not available on %s", roomNum, hotelID, date) + ANSI_RESET);
                }
@@ -728,7 +728,7 @@ public class Hotel {
          reservation += "bookingID = " + bookingID + " AND r.hotelID = b.hotelID AND r.roomNumber = b.roomNumber";
          List<List<String>> output = esql.executeQueryAndReturnResult(reservation);
 
-         System.out.printf("\n------------------------------------------------------------------------------\n");
+         System.out.printf("\n\n\n\n\n------------------------------------------------------------------------------\n");
          System.out.printf("|" + ANSI_YELLOW + "                              Your Reservatoin                              " + ANSI_RESET + "|\n");
          System.out.printf("------------------------------------------------------------------------------\n");
          System.out.printf("| %10s | %11s | %8s | %11s | %12s | %7s |%n", "Booking ID", "Customer ID", "Hotel ID", "Room Number", "Booking Date", "Price");
@@ -744,7 +744,7 @@ public class Hotel {
       try{
          String histortQuery = "SELECT b.bookingID, b.hotelID, b.roomNumber, b.bookingDate, r.price FROM RoomBookings b, Rooms r WHERE b.customerID = ";
          histortQuery += userID;
-         histortQuery += " AND r.hotelID = b.hotelID AND r.roomNumber = b.roomNumber ORDER BY b.bookingID DESC LIMIT 5";
+         histortQuery += " AND r.hotelID = b.hotelID AND r.roomNumber = b.roomNumber ORDER BY b.bookingDate DESC LIMIT 5";
          
          List<List<String>> output = esql.executeQueryAndReturnResult(histortQuery);
          int rowCount = output.size();
@@ -822,7 +822,7 @@ public class Hotel {
                      showPriceResult += " AND roomNumber = " + roomNum;
                      List<List<String>> priceOutput = esql.executeQueryAndReturnResult(showPriceResult);
 
-                     System.out.printf("\n---------------------------------------------------------------------\n");
+                     System.out.printf("\n\n\n\n\n---------------------------------------------------------------------\n");
                      System.out.printf("|" + ANSI_YELLOW + "                           Updated Info                            " + ANSI_RESET + "|\n");
                      System.out.printf("---------------------------------------------------------------------\n");
                      System.out.printf("| %8s | %11s | %7s | %-30s |%n", "Hotel ID", "Room Number", "Price", "Image URL");
@@ -845,7 +845,7 @@ public class Hotel {
                      showUrlResult += " AND roomNumber = " + roomNum;
                      List<List<String>> urlOutput = esql.executeQueryAndReturnResult(showUrlResult);
 
-                     System.out.printf("\n---------------------------------------------------------------------\n");
+                     System.out.printf("\n\n\n\n\n---------------------------------------------------------------------\n");
                      System.out.printf("|" + ANSI_YELLOW + "                           Updated Info                            " + ANSI_RESET + "|\n");
                      System.out.printf("---------------------------------------------------------------------\n");
                      System.out.printf("| %8s | %11s | %7s | %-30s |%n", "Hotel ID", "Room Number", "Price", "Image URL");
@@ -911,11 +911,10 @@ public class Hotel {
             }
          }
          
-         String query = "SELECT b.bookingID, u.name, b.hotelID, b.roomNumber, b.bookingDate, r.price FROM RoomBookings b, Hotel h, Rooms r, Users u WHERE h.managerUserID = ";
+         String query = "SELECT b.bookingID, u.name, b.hotelID, b.roomNumber, b.bookingDate, r.price FROM RoomBookings b, Hotel h, Rooms r, Users u WHERE b.bookingDate BETWEEN '";
+         query += startDate + "' AND '" + endDate + "' AND h.managerUserID = ";
          query += userID;
-         query += " AND h.hotelID = b.hotelID AND b.hotelID = r.hotelID AND b.customerID = u.userID AND b.roomNumber = r.roomNumber AND b.bookingDate BETWEEN '";
-         query += startDate + "' AND '" + endDate + "'";
-         query += " ORDER By b.bookingDate DESC";
+         query += " AND h.hotelID = b.hotelID AND b.hotelID = r.hotelID AND u.userID = b.customerID AND b.roomNumber = r.roomNumber ORDER By b.bookingDate DESC";
          List<List<String>> output = esql.executeQueryAndReturnResult(query);
          int rowCount = output.size();
 
