@@ -14,12 +14,18 @@
 import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Locale;
 import java.util.ArrayList;
 import java.lang.Math;
 
@@ -419,7 +425,7 @@ public class Hotel {
       System.out.println(ANSI_YELLOW + "==========================================================" + ANSI_RESET);                                          
    }//end Greeting
 
-   /*
+   /**
     * Reads the users choice given from the keyboard
     * @int
     **/
@@ -439,9 +445,8 @@ public class Hotel {
       return input;
    }//end readChoice
    
-   /*
+   /**
     * Reads the userID given from the keyboard
-    * @int
     **/
    public static int readUserID() {
       int input;
@@ -458,6 +463,52 @@ public class Hotel {
       }while (true);
       return input;
    }//end readUserID
+
+   /**
+    * Reads the integer given from the keyboard
+    **/
+    public static String readInt() {
+      String input;
+      // returns only if a correct value is given.
+      try {
+         input = Integer.toString(Integer.parseInt(in.readLine()));
+         return input;
+      }catch (Exception e){
+         System.out.println(ANSI_RED + "\tInput should only contain integers!" + ANSI_RESET);
+      }
+      return null;
+   }//end readInt
+
+   /**
+    * Validate input date format
+    */
+   public static boolean isValidFormat(String format, String value, Locale locale) {
+      LocalDateTime ldt = null;
+      DateTimeFormatter fomatter = DateTimeFormatter.ofPattern(format, locale);
+  
+      try {
+          ldt = LocalDateTime.parse(value, fomatter);
+          String result = ldt.format(fomatter);
+          return result.equals(value);
+      } catch (DateTimeParseException e) {
+          try {
+              LocalDate ld = LocalDate.parse(value, fomatter);
+              String result = ld.format(fomatter);
+              return result.equals(value);
+          } catch (DateTimeParseException exp) {
+              try {
+                  LocalTime lt = LocalTime.parse(value, fomatter);
+                  String result = lt.format(fomatter);
+                  return result.equals(value);
+              } catch (DateTimeParseException e2) {
+                  // Debugging purposes
+                  //e2.printStackTrace();
+              }
+          }
+      }
+  
+      return false;
+  }
 
    /*
     * Creates a new user
@@ -476,7 +527,7 @@ public class Hotel {
       }
    }//end CreateUser
 
-   /*
+   /**
     * Check log in credentials for an existing user
     * @return User login or null is the user does not exist
     **/
@@ -498,7 +549,7 @@ public class Hotel {
       }
    }//end Login
 
-   /*
+   /**
     * Prompy user to press enter to continue
     **/
    public static void promptEnterKey(){
@@ -514,10 +565,16 @@ public class Hotel {
 
    public static void viewHotels(Hotel esql) {
       try{
-         System.out.print("\tEnter latitude: ");
-         String latitude = in.readLine();
-         System.out.print("\tEnter longitude: ");
-         String longitude = in.readLine();
+         String latitude = null;
+         while(latitude == null){
+            System.out.print("\tEnter latitude: ");
+            latitude = readInt();
+         }
+         String longitude = null;
+         while(longitude == null){
+            System.out.print("\tEnter longitude: ");
+            longitude = readInt();
+         }
 
          String query = "SELECT d.hotelID, d.hotelName, d.dateEstablished FROM (SELECT hotelID, hotelName, dateEstablished, calculate_distance(";
          query += latitude + ", " + longitude + ", ";
@@ -542,16 +599,30 @@ public class Hotel {
    }
    public static void viewRooms(Hotel esql) {
       try{
-         System.out.print("\tEnter Hotel ID: ");
-         String hotelID = in.readLine();
+         String hotelID = null;
+         while(hotelID == null){
+            System.out.print("\tEnter Hotel ID: ");
+            hotelID = readInt();
+         }
+
          int row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
          while (row == 0){
             System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
             hotelID = in.readLine();
             row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
          }
-         System.out.print("\tEnter a date (MM/DD/YYYY): ");
-         String date = in.readLine();
+
+         boolean dateFormatCheck = true;
+         String date = null;
+         while (dateFormatCheck) {
+            System.out.print("\tEnter a date (MM/DD/YYYY): ");
+            date = in.readLine();
+            if(isValidFormat("MM/dd/yyyy", date, Locale.ENGLISH)){
+               dateFormatCheck = false;
+            }else{
+               System.out.println(ANSI_RED + "\tYour input is invalid! Check your date format (MM/DD/YYYY)" + ANSI_RESET);
+            }
+         }
 
          String query = "SELECT r.hotelID, r.roomNumber, r.price, r.imageURL FROM rooms r WHERE NOT EXISTS (SELECT * FROM roombookings b WHERE r.hotelID = hotelID AND r.roomNumber = b.roomNumber AND b.bookingDate = '";
          query += date + "')";
