@@ -17,8 +17,6 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.io.File;
-import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -314,7 +312,7 @@ public class Hotel {
                if (userType.toLowerCase().contains("customer")) {
                   boolean usermenu = true;                  
                   while(usermenu) {
-                     System.out.println();
+                     System.out.println("\n\n\n");
                      System.out.println("----------------------------------------------------------");
                      System.out.println("|" + ANSI_YELLOW + "                     User Main Menu                     " + ANSI_RESET + "|");
                      System.out.println("----------------------------------------------------------");                
@@ -322,6 +320,12 @@ public class Hotel {
                      System.out.println("| 2. View Rooms                                          |");
                      System.out.println("| 3. Book a Room                                         |");
                      System.out.println("| 4. View recent booking history                         |");
+                     System.out.println("|                                                        |");
+                     System.out.println("|                                                        |");
+                     System.out.println("|                                                        |");
+                     System.out.println("|                                                        |");
+                     System.out.println("|                                                        |");
+                     System.out.println("|                                                        |");
                      System.out.println("----------------------------------------------------------");
                      System.out.println("| 20. Log out                                            |");
                      System.out.println("----------------------------------------------------------");                
@@ -341,7 +345,7 @@ public class Hotel {
                }else {
                   boolean managermenu = true;                  
                   while(managermenu) {
-                     System.out.println();
+                     System.out.println("\n\n\n");
                      System.out.println("----------------------------------------------------------");
                      System.out.println("|" + ANSI_YELLOW + "                    Manager Main Menu                   " + ANSI_RESET + "|");
                      System.out.println("----------------------------------------------------------"); 
@@ -492,7 +496,19 @@ public class Hotel {
          System.err.println (e.getMessage ());
          return null;
       }
-   }//end
+   }//end Login
+
+   /*
+    * Prompy user to press enter to continue
+    **/
+   public static void promptEnterKey(){
+      System.out.println("Press Enter key to continue...");
+      try {
+         in.readLine();
+      }catch(Exception e) {
+         System.err.println(e.getMessage());
+      }
+   }//end promptEnterKey
 
 // Rest of the functions definition go in here
 
@@ -511,7 +527,7 @@ public class Hotel {
          int rowCount = output.size();
 
          System.out.printf("\n----------------------------------------------------------------\n");
-         System.out.printf("|                    Hotels within 30 units                    |\n");
+         System.out.printf("|" + ANSI_YELLOW + "                    Hotels within 30 units                    " + ANSI_RESET + "|\n");
          System.out.printf("----------------------------------------------------------------\n");
          System.out.printf("| %8s | %-30s | %16s |%n", "Hotel ID", "Hotel Name", "Date Established");
          System.out.printf("----------------------------------------------------------------\n");
@@ -519,6 +535,7 @@ public class Hotel {
             System.out.printf("| %8s | %-30s | %16s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2));
          }
          System.out.printf("----------------------------------------------------------------\n\n");
+         promptEnterKey();
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
@@ -544,7 +561,7 @@ public class Hotel {
          List<List<String>> output = esql.executeQueryAndReturnResult(query);
          int rowCount = output.size();
          System.out.printf("\n---------------------------------------------------------------------\n");
-         String title = String.format("|                   Rooms Available on %10s                   |", date);
+         String title = String.format("|" + ANSI_YELLOW + "                   Rooms Available on %10s                   " + ANSI_RESET + "|", date);
          System.out.println(title);
          System.out.printf("---------------------------------------------------------------------\n");
          System.out.printf("| %8s | %11s | %7s | %-30s |%n", "Hotel ID", "Room Number", "Price", "Image URL");
@@ -553,6 +570,7 @@ public class Hotel {
             System.out.printf("| %8s | %11s | %7s | %30s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2), output.get(i).get(3));
          }
          System.out.printf("---------------------------------------------------------------------\n\n");
+         promptEnterKey();
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
@@ -599,12 +617,13 @@ public class Hotel {
          List<List<String>> output = esql.executeQueryAndReturnResult(reservation);
 
          System.out.printf("\n------------------------------------------------------------------------------\n");
-         System.out.printf("|                              Your Reservatoin                              |\n");
+         System.out.printf("|" + ANSI_YELLOW + "                              Your Reservatoin                              " + ANSI_RESET + "|\n");
          System.out.printf("------------------------------------------------------------------------------\n");
          System.out.printf("| %10s | %11s | %8s | %11s | %12s | %7s |%n", "Booking ID", "Customer ID", "Hotel ID", "Room Number", "Booking Date", "Price");
          System.out.printf("------------------------------------------------------------------------------\n");
          System.out.printf("| %10s | %11s | %8s | %11s | %12s | %7s |%n", output.get(0).get(0), output.get(0).get(1), output.get(0).get(2), output.get(0).get(3), output.get(0).get(4), output.get(0).get(5));
          System.out.printf("------------------------------------------------------------------------------\n\n");
+         promptEnterKey();
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
@@ -619,7 +638,7 @@ public class Hotel {
          int rowCount = output.size();
 
          System.out.printf("\n----------------------------------------------------------------\n");
-         System.out.printf("|                  Your Recent Booking History                 |\n");
+         System.out.printf("|" + ANSI_YELLOW + "                  Your Recent Booking History                 " + ANSI_RESET + "|\n");
          System.out.printf("----------------------------------------------------------------\n");
          System.out.printf("| %10s | %8s | %11s | %12s | %7s |%n", "Booking ID", "Hotel ID", "Room Number", "Booking Date", "Price");
          System.out.printf("----------------------------------------------------------------\n");
@@ -627,6 +646,7 @@ public class Hotel {
             System.out.printf("| %10s | %8s | %11s | %12s | %7s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2), output.get(i).get(3), output.get(i).get(4));
          }
          System.out.printf("----------------------------------------------------------------\n\n");
+         promptEnterKey();
       }catch(Exception e){
          System.err.println (e.getMessage());
       }     
@@ -677,12 +697,13 @@ public class Hotel {
                      List<List<String>> priceOutput = esql.executeQueryAndReturnResult(showPriceResult);
 
                      System.out.printf("\n---------------------------------------------------------------------\n");
-                     System.out.printf("|                           Updated Info                            |\n");
+                     System.out.printf("|" + ANSI_YELLOW + "                           Updated Info                            " + ANSI_RESET + "|\n");
                      System.out.printf("---------------------------------------------------------------------\n");
                      System.out.printf("| %8s | %11s | %7s | %-30s |%n", "Hotel ID", "Room Number", "Price", "Image URL");
                      System.out.printf("---------------------------------------------------------------------\n");
                      System.out.printf("| %8s | %11s | %7s | %30s |%n", priceOutput.get(0).get(0), priceOutput.get(0).get(1), priceOutput.get(0).get(2), priceOutput.get(0).get(3));
                      System.out.printf("---------------------------------------------------------------------\n\n");
+                     promptEnterKey();
                      break;
                   case 2: 
                      System.out.print("\tEnter the new image URL: ");
@@ -699,12 +720,13 @@ public class Hotel {
                      List<List<String>> urlOutput = esql.executeQueryAndReturnResult(showUrlResult);
 
                      System.out.printf("\n---------------------------------------------------------------------\n");
-                     System.out.printf("|                           Updated Info                            |\n");
+                     System.out.printf("|" + ANSI_YELLOW + "                           Updated Info                            " + ANSI_RESET + "|\n");
                      System.out.printf("---------------------------------------------------------------------\n");
                      System.out.printf("| %8s | %11s | %7s | %-30s |%n", "Hotel ID", "Room Number", "Price", "Image URL");
                      System.out.printf("---------------------------------------------------------------------\n");
                      System.out.printf("| %8s | %11s | %7s | %30s |%n", urlOutput.get(0).get(0), urlOutput.get(0).get(1), urlOutput.get(0).get(2), urlOutput.get(0).get(3));
                      System.out.printf("---------------------------------------------------------------------\n\n");
+                     promptEnterKey();
                      break;
                   case 8: updateMenu = false; break;
                   case 9: updateMenu = false; keepon = false; break;
@@ -724,7 +746,7 @@ public class Hotel {
          int rowCount = output.size();
 
          System.out.printf("\n-----------------------------------------------------------------------------\n");
-         System.out.printf("|                           Last 5 Recent Updates                           |\n");
+         System.out.printf("|" + ANSI_YELLOW + "                           Last 5 Recent Updates                           " + ANSI_RESET + "|\n");
          System.out.printf("-----------------------------------------------------------------------------\n");
          System.out.printf("| %13s | %10s | %8s | %11s | %19s |%n", "Update Number", "Manager ID", "Hotel ID", "Room Number", "Updated On");
          System.out.printf("-----------------------------------------------------------------------------\n");
@@ -732,6 +754,7 @@ public class Hotel {
             System.out.printf("| %13s | %10s | %8s | %11s | %19s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2), output.get(i).get(3), output.get(i).get(4));
          }
          System.out.printf("-----------------------------------------------------------------------------\n\n");
+         promptEnterKey();
       }catch(Exception e){
          System.err.println(e.getMessage());
       }
@@ -752,7 +775,7 @@ public class Hotel {
          int rowCount = output.size();
 
          System.out.printf("\n---------------------------------------------------------------------------------------------------------------------\n");
-         String title = String.format("|                                   Booking History From %10s to %10s                                   |", startDate, endDate);
+         String title = String.format("|" + ANSI_YELLOW + "                                   Booking History From %10s to %10s                                   " + ANSI_RESET + "|", startDate, endDate);
          System.out.println(title);
          System.out.printf("---------------------------------------------------------------------------------------------------------------------\n");
          System.out.printf("| %10s | %-50s | %8s | %11s | %12s | %7s |%n", "Booking ID", "Customer Name", "Hotel ID", "Room Number", "Booking Date", "Price");
@@ -761,6 +784,7 @@ public class Hotel {
             System.out.printf("| %10s | %-50s | %8s | %11s | %12s | %7s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2), output.get(i).get(3), output.get(i).get(4), output.get(i).get(5));
          }
          System.out.printf("---------------------------------------------------------------------------------------------------------------------\n\n");
+         promptEnterKey();
       }catch(Exception e){
          System.err.println(e.getMessage());
       }
@@ -783,7 +807,7 @@ public class Hotel {
          int rowCount = output.size();
         
          System.out.printf("\n--------------------------------------------------------------------------------\n");
-         String title = String.format("|                    Top 5 Regular Customer at Hotel ID: %2s                    |", hotelID);
+         String title = String.format("|" + ANSI_YELLOW + "                    Top 5 Regular Customer at Hotel ID: %2s                    " + ANSI_RESET + "|", hotelID);
          System.out.println(title);
          System.out.printf("--------------------------------------------------------------------------------\n");
          System.out.printf("| %7s | %-50s | %13s |%n", "User ID", "Customer Name", "Bookings Made");
@@ -792,6 +816,7 @@ public class Hotel {
             System.out.printf("| %7s | %-50s | %13s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2));
          }
          System.out.printf("--------------------------------------------------------------------------------\n\n");
+         promptEnterKey();
       }catch(Exception e){
          System.err.println(e.getMessage());
       }
@@ -835,12 +860,13 @@ public class Hotel {
          List<List<String>> output = esql.executeQueryAndReturnResult(requestRecord);
 
          System.out.printf("\n-----------------------------------------------------------------\n");
-         System.out.printf("|                        Repair Request                         |\n");
+         System.out.printf("|" + ANSI_YELLOW + "                        Repair Request                         " + ANSI_RESET + "|\n");
          System.out.printf("-----------------------------------------------------------------\n");
          System.out.printf("| %9s | %10s | %8s | %11s | %11s |%n", "Repair ID", "Company ID", "Hotel ID", "Room Number", "Repair Date");
          System.out.printf("-----------------------------------------------------------------\n");
          System.out.printf("| %9s | %10s | %8s | %11s | %11s |%n", output.get(0).get(0), output.get(0).get(1), output.get(0).get(2), output.get(0).get(3), output.get(0).get(4));
          System.out.printf("-----------------------------------------------------------------\n\n");
+         promptEnterKey();
       }catch(Exception e){
          System.err.println(e.getMessage());
       }
@@ -853,7 +879,7 @@ public class Hotel {
          int rowCount = output.size();
 
          System.out.printf("\n-----------------------------------------------------------------\n");
-         System.out.printf("|                        Repair History                         |\n");
+         System.out.printf("|" + ANSI_YELLOW + "                        Repair History                         " + ANSI_RESET + "|\n");
          System.out.printf("-----------------------------------------------------------------\n");
          System.out.printf("| %9s | %10s | %8s | %11s | %11s |%n", "Repair ID", "Company ID", "Hotel ID", "Room Number", "Repair Date");
          System.out.printf("-----------------------------------------------------------------\n");
@@ -861,6 +887,7 @@ public class Hotel {
             System.out.printf("| %9s | %10s | %8s | %11s | %11s |%n", output.get(i).get(0), output.get(i).get(1), output.get(i).get(2), output.get(i).get(3), output.get(i).get(4));
          }
          System.out.printf("-----------------------------------------------------------------\n\n");
+         promptEnterKey();
       }catch(Exception e){
          System.err.println(e.getMessage());
       }
