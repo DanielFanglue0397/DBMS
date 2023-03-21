@@ -465,7 +465,7 @@ public class Hotel {
    }//end readUserID
 
    /**
-    * Reads the integer given from the keyboard
+    * Reads the integer given from the keyboard and return String of int
     **/
     public static String readInt() {
       String input;
@@ -599,17 +599,18 @@ public class Hotel {
    }
    public static void viewRooms(Hotel esql) {
       try{
+         boolean hotelIDCheck = true;
          String hotelID = null;
-         while(hotelID == null){
+         while(hotelIDCheck){
             System.out.print("\tEnter Hotel ID: ");
             hotelID = readInt();
-         }
-
-         int row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
-         while (row == 0){
-            System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
-            hotelID = in.readLine();
-            row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
+            int row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
+            if (row > 0) {
+               hotelIDCheck = false;
+               break;
+            }else{
+               System.out.print(ANSI_RED + "\tInvalid Hotel ID.\n" + ANSI_RESET);
+            }
          }
 
          boolean dateFormatCheck = true;
