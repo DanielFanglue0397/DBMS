@@ -649,23 +649,34 @@ public class Hotel {
    }
    public static void bookRooms(Hotel esql, String userID) {
       try{
-         System.out.print("\tEnter Hotel ID: ");
-         String hotelID = in.readLine();
-         int row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
-         while (row == 0){
-            System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
-            hotelID = in.readLine();
-            row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
+         boolean hotelIDCheck = true;
+         String hotelID = null;
+         while(hotelIDCheck){
+            System.out.print("\tEnter Hotel ID: ");
+            hotelID = readInt();
+            int row = esql.executeQuery("SELECT hotelID FROM Hotel WHERE hotelID = " + hotelID);
+            if (row > 0) {
+               hotelIDCheck = false;
+               break;
+            }else{
+               System.out.print(ANSI_RED + "\tInvalid Hotel ID.\n" + ANSI_RESET);
+            }
          }
 
-         System.out.print("\tEnter Room Number: ");
-         String roomNum = in.readLine();
-         row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
-         while (row == 0){
-            System.out.print("\tInvalid Room Number. Enter Room Number: ");
-            roomNum = in.readLine();
-            row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
-         }         
+         boolean roomNumberCheck = true;
+         String roomNum = null;
+         while(roomNumberCheck){
+            System.out.print("\tEnter Room Number: ");
+            roomNum = readInt();
+            int row = esql.executeQuery("SELECT roomNumber FROM Rooms WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID);
+            if (row > 0) {
+               roomNumberCheck = false;
+               break;
+            }else{
+               System.out.print(ANSI_RED + "\tInvalid Room Number.\n" + ANSI_RESET);
+            }
+         }
+              
          System.out.print("\tEnter Date (MM/DD/YYYY): ");
          String date = in.readLine();
          row = esql.executeQuery("SELECT bookingDate FROM roomBookings WHERE roomNumber = "+ roomNum + " AND HotelID = " + hotelID + " AND bookingDate = '" + date + "'");
